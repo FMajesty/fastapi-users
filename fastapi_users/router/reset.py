@@ -2,7 +2,7 @@ from typing import Callable, Optional
 
 import jwt
 from fastapi import APIRouter, Body, HTTPException, Request, status
-from pydantic import UUID4, EmailStr
+from pydantic import EmailStr
 
 from fastapi_users import models
 from fastapi_users.db import BaseUserDatabase
@@ -60,7 +60,7 @@ def get_reset_password_router(
                 )
 
             try:
-                user_uiid = UUID4(user_id)
+                user_uiid = int(user_id)
             except ValueError:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,

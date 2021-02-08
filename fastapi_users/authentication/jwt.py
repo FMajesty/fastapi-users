@@ -3,7 +3,6 @@ from typing import Any, Optional
 import jwt
 from fastapi import Response
 from fastapi.security import OAuth2PasswordBearer
-from pydantic import UUID4
 
 from fastapi_users.authentication.base import BaseAuthentication
 from fastapi_users.db.base import BaseUserDatabase
@@ -60,7 +59,7 @@ class JWTAuthentication(BaseAuthentication[str]):
             return None
 
         try:
-            user_uiid = UUID4(user_id)
+            user_uiid = int(user_id)
             return await user_db.get(user_uiid)
         except ValueError:
             return None

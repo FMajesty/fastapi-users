@@ -2,7 +2,7 @@ from typing import Callable, Optional, Type, cast
 
 import jwt
 from fastapi import APIRouter, Body, HTTPException, Request, status
-from pydantic import UUID4, EmailStr
+from pydantic import EmailStr
 
 from fastapi_users import models
 from fastapi_users.router.common import ErrorCode, run_handler
@@ -98,14 +98,14 @@ def get_verify_router(
             )
 
         try:
-            user_uuid = UUID4(user_id)
+            user_id = int(user_id)
         except ValueError:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=ErrorCode.VERIFY_USER_BAD_TOKEN,
             )
 
-        if user_check.id != user_uuid:
+        if user_check.id != user_id:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=ErrorCode.VERIFY_USER_BAD_TOKEN,

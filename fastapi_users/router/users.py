@@ -1,7 +1,6 @@
 from typing import Any, Callable, Dict, Optional, Type, cast
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
-from pydantic import UUID4
 
 from fastapi_users import models
 from fastapi_users.authentication import Authenticator
@@ -29,7 +28,7 @@ def get_users_router(
         get_current_active_user = authenticator.get_current_active_user
         get_current_superuser = authenticator.get_current_superuser
 
-    async def _get_or_404(id: UUID4) -> models.BaseUserDB:
+    async def _get_or_404(id: int) -> models.BaseUserDB:
         user = await user_db.get(id)
         if user is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
@@ -71,20 +70,20 @@ def get_users_router(
         return updated_user
 
     @router.get(
-        "/{id:uuid}",
+        "/{id:int}",
         response_model=user_model,
         dependencies=[Depends(get_current_superuser)],
     )
-    async def get_user(id: UUID4):
+    async def get_user(id: int):
         return await _get_or_404(id)
 
     @router.patch(
-        "/{id:uuid}",
+        "/{id:int}",
         response_model=user_model,
         dependencies=[Depends(get_current_superuser)],
     )
     async def update_user(
-        id: UUID4, updated_user: user_update_model, request: Request  # type: ignore
+        id: int, updated_user: user_update_model, request: Request  # type: ignore
     ):
         updated_user = cast(
             models.BaseUserUpdate,
@@ -95,11 +94,11 @@ def get_users_router(
         return await _update_user(user, updated_user_data, request)
 
     @router.delete(
-        "/{id:uuid}",
+        "/{id:int}",
         status_code=status.HTTP_204_NO_CONTENT,
         dependencies=[Depends(get_current_superuser)],
     )
-    async def delete_user(id: UUID4):
+    async def delete_user(id: int):
         user = await _get_or_404(id)
         await user_db.delete(user)
         return None

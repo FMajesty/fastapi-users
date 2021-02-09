@@ -139,7 +139,7 @@ class SQLAlchemyUserDatabase(BaseUserDatabase[UD]):
         raise NotSetOAuthAccountTableError()
 
     async def create(self, user: UD) -> UD:
-        user_dict = user.dict()
+        user_dict = user.dict(exclude={'id'})
         oauth_accounts_values = None
 
         if "oauth_accounts" in user_dict:

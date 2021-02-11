@@ -1,6 +1,6 @@
 from typing import Generic, Optional, Type
 
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.security import HTTPBasicCredentials
 
 from fastapi_users import password
 from fastapi_users.models import UD
@@ -43,7 +43,7 @@ class BaseUserDatabase(Generic[UD]):
         raise NotImplementedError()
 
     async def authenticate(
-        self, credentials: OAuth2PasswordRequestForm
+        self, credentials: HTTPBasicCredentials
     ) -> Optional[UD]:
         """
         Authenticate and return a user following an email and a password.

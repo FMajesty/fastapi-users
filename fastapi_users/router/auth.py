@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Response, status
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.security import HTTPBasicCredentials
 
 from fastapi_users import models
 from fastapi_users.authentication import Authenticator, BaseAuthentication
@@ -22,7 +22,7 @@ def get_auth_router(
 
     @router.post("/login")
     async def login(
-        response: Response, credentials: OAuth2PasswordRequestForm = Depends()
+        response: Response, credentials: HTTPBasicCredentials = Depends()
     ):
         user = await user_db.authenticate(credentials)
 

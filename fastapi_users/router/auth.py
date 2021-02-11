@@ -1,10 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException, Response, status
-from fastapi.security import HTTPBasicCredentials
+from fastapi.security import HTTPBasicCredentials, HTTPBasic
 
 from fastapi_users import models
 from fastapi_users.authentication import Authenticator, BaseAuthentication
 from fastapi_users.db import BaseUserDatabase
 from fastapi_users.router.common import ErrorCode
+
+
+security = HTTPBasic()
 
 
 def get_auth_router(
@@ -22,7 +25,7 @@ def get_auth_router(
 
     @router.post("/login")
     async def login(
-        response: Response, credentials: HTTPBasicCredentials = Depends()
+        response: Response, credentials: HTTPBasicCredentials = Depends(security)
     ):
         user = await user_db.authenticate(credentials)
 

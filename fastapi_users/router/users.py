@@ -1,6 +1,7 @@
 from typing import Any, Callable, Dict, Optional, Type, cast
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
+from pydantic import UUID4
 
 from fastapi_users import models
 from fastapi_users.authentication import Authenticator
@@ -28,8 +29,8 @@ def get_users_router(
         get_current_active_user = authenticator.get_current_active_user
         get_current_superuser = authenticator.get_current_superuser
 
-    async def _get_or_404(id: int) -> models.BaseUserDB:
-        user = await user_db.get(id)
+    async def _get_or_404(uuid: UUID4) -> models.BaseUserDB:
+        user = await user_db.get(uuid)
         if user is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
         return user
@@ -70,26 +71,26 @@ def get_users_router(
         return updated_user
 
     @router.get(
-        "/{id:int}",
+        "/{id:uuid}",
         response_model=user_model,
         dependencies=[Depends(get_current_superuser)],
     )
-    async def get_user(id: int):
-        return await _get_or_404(id)
+    async def get_user(uuid: UUID4):
+        return await _get_or_404(uuid)
 
     @router.patch(
-        "/{id:int}",
+        "/{id:uuid}",
         response_model=user_model,
         dependencies=[Depends(get_current_superuser)],
     )
     async def update_user(
-        id: int, updated_user: user_update_model, request: Request  # type: ignore
+        uuid: UUID4, updated_user: user_update_model, request: Request  # type: ignore
     ):
         updated_user = cast(
             models.BaseUserUpdate,
             updated_user,
         )  # Prevent mypy complain
-        user = await _get_or_404(id)
+        user = await _get_or_404(uuid)
         updated_user_data = updated_user.create_update_dict_superuser()
         return await _update_user(user, updated_user_data, request)
 

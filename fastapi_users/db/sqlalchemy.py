@@ -2,6 +2,7 @@ import uuid
 from typing import Mapping, Optional, Type
 
 from databases import Database
+from pydantic import UUID4
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Table, func, select
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.declarative import declared_attr
@@ -114,8 +115,8 @@ class SQLAlchemyUserDatabase(BaseUserDatabase[UD]):
         self.users = users
         self.oauth_accounts = oauth_accounts
 
-    async def get(self, id: int) -> Optional[UD]:
-        query = self.users.select().where(self.users.c.id == id)
+    async def get(self, uuid: UUID4) -> Optional[UD]:
+        query = self.users.select().where(self.users.c.unique_id == uuid)
         user = await self.database.fetch_one(query)
         return await self._make_user(user) if user else None
 

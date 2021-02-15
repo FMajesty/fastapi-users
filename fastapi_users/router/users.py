@@ -93,14 +93,14 @@ def get_users_router(
         updated_user_data = updated_user.create_update_dict_superuser()
         return await _update_user(user, updated_user_data, request)
 
-    @router.delete(
-        "/{id:int}",
-        status_code=status.HTTP_204_NO_CONTENT,
-        dependencies=[Depends(get_current_superuser)],
-    )
-    async def delete_user(id: int):
-        user = await _get_or_404(id)
-        await user_db.delete(user)
-        return None
+    # @router.delete(
+    #     "/{id:int}",
+    #     status_code=status.HTTP_204_NO_CONTENT,
+    #     dependencies=[Depends(get_current_superuser)],
+    # )
+    # async def delete_user(id: int):
+    #     user = await _get_or_404(id)
+    #     await user_db.delete(user)
+    #     return None
 
     return router

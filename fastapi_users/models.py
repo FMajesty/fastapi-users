@@ -1,6 +1,7 @@
 from typing import List, Optional, TypeVar
 
 from pydantic import BaseModel, EmailStr
+from pydantic import UUID4
 
 
 class CreateUpdateDictModel(BaseModel):
@@ -23,7 +24,7 @@ class CreateUpdateDictModel(BaseModel):
 class BaseUser(CreateUpdateDictModel):
     """Base User model."""
 
-    id: Optional[int] = None
+    unique_id: Optional[UUID4] = None
     email: Optional[EmailStr] = None
     is_active: Optional[bool] = True
     is_superuser: Optional[bool] = False

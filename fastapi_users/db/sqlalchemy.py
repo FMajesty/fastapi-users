@@ -115,7 +115,12 @@ class SQLAlchemyUserDatabase(BaseUserDatabase[UD]):
         self.users = users
         self.oauth_accounts = oauth_accounts
 
-    async def get(self, uuid: UUID4) -> Optional[UD]:
+    async def get(self, id: int) -> Optional[UD]:
+        query = self.users.select().where(self.users.c.id == id)
+        user = await self.database.fetch_one(query)
+        return await self._make_user(user) if user else None
+
+    async def get_by_uuid(self, uuid: UUID4) -> Optional[UD]:
         query = self.users.select().where(self.users.c.unique_id == uuid)
         user = await self.database.fetch_one(query)
         return await self._make_user(user) if user else None

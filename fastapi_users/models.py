@@ -44,7 +44,7 @@ class BaseUserUpdate(BaseUser):
 
 
 class BaseUserDB(BaseUser):
-    id: int
+    id: Optional[int]
     hashed_password: str
 
     class Config:

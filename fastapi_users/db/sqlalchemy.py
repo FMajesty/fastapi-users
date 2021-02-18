@@ -146,6 +146,7 @@ class SQLAlchemyUserDatabase(BaseUserDatabase[UD]):
 
     async def create(self, user: UD) -> UD:
         user_dict = user.dict(exclude={'id'})
+        user_dict["unique_id"] = uuid.uuid4()
         oauth_accounts_values = None
 
         if "oauth_accounts" in user_dict:
